@@ -43,6 +43,11 @@ dashboard: [
 								{name: "USE_PROMETHEUS", value:               "\(config.enable_historical_metrics)"},
 								{name: "DISABLE_PROMETHEUS_ROUTES_UI", value: "true"},
 								{name: "ENABLE_INLINE_DOCS", value:           "true"},
+								{name: "REDIS_HOST", value:                   "\(defaults.redis_host)"},
+								{name: "REDIS_PORT", value:                   "6379"},
+								{name: "KEYCLOAK_CLIENT_ID", value:           "\(defaults.edge.oidc.client_id)"},
+								{name: "KEYCLOAK_CLIENT_SECRET", value:       "\(defaults.edge.oidc.client_secret)"},
+								{name: "KEYCLOAK_AUTH_URL", value:            "\(defaults.edge.oidc.endpoint)/auth/realms/\(defaults.edge.oidc.realm)/protocol/openid-connect/token"},
 							]
 							volumeMounts: [
 								{
