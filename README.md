@@ -1,6 +1,6 @@
-# Grey Matter Common CUE
+# Grey Matter Core CUE
 
-Common CUE files for core Grey Matter mesh configurations.
+Enterprise-level CUE files for core Grey Matter mesh configurations.
 
 ## Prerequisites
 

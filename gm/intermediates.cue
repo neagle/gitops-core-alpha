@@ -560,7 +560,7 @@ import (
 #envoy_ext_authz: ext_authz.#ExtAuthz | *{
 	grpc_service: {
 		envoy_grpc: {
-			cluster_name: "ext_authz" // Needs to match the name of your cluster. Since its a grpc connection, you must create an http/2 cluster
+			cluster_name: "opa" // Needs to match the name of your cluster. Since its a grpc connection, you must create an http/2 cluster
 		}
 	}
 	failure_mode_allow: false // set to true to allow requests to pass in the case of a authz network failure
@@ -578,4 +578,26 @@ import (
 		}
 	}
 	failure_mode_allow: false // set to true to allow requests to pass in the case of a authz network failure
+}
+
+#OPAEgress: {
+	input: {
+		name: string
+		domain_key: string
+		configs: [...]
+	}
+	_opa_key: "\(input.name)-egress-to-opa"
+	out: {
+		key: _opa_key
+		config: [
+			#cluster & {
+				cluster_key: _opa_key,
+				name: "opa",
+				http2_protocol_options: {
+					allow_connect: true
+				}
+			},
+			#route & {route_key: _opa_key, domain_key: input.domain_key}
+		] + input.configs
+	}
 }
