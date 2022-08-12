@@ -67,7 +67,7 @@ defaults: {
 			endpoint_host: "iam2.greymatter.io"
 			endpoint_port:  1234
 			endpoint:       "https://\(endpoint_host)"
-			domain:         ""
+			domain:         "20.221.110.13"
 			client_id:      "example1"
 			client_secret:  "dtTDcMoW0mc88i3VJQnYVzOsWPU9hJr9"
 			realm:          "example-realm"
