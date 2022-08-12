@@ -25,7 +25,7 @@ import (
 	force_https:  _force_https
 	if _force_https == true {
 		ssl_config: greymatter.#SSLConfig & {
-			protocols: [ "TLSv1.2"]
+			protocols: [ "TLSv1_2"]
 			trust_file: "/etc/proxy/tls/sidecar/ca.crt"
 			cert_key_pairs: [
 				greymatter.#CertKeyPathPair & {
@@ -510,7 +510,7 @@ import (
 // Assumes the http/2 cluster between proxy and the rate limit service is called ratelimit.
 // see https://www.envoyproxy.io/docs/envoy/latest/intro/arch_overview/other_features/global_rate_limiting#arch-overview-global-rate-limit for a discussion of ratelimiting and 
 // special descriptors to use
-#default_rate_limit: {
+#default_rate_limit: ratelimit.#RateLimit & {
 	stat_prefix:       defaults.edge.key
 	domain:            defaults.edge.key
 	failure_mode_deny: true
@@ -527,7 +527,6 @@ import (
 	rate_limit_service: {
 		grpc_service: {
 			envoy_grpc: {
-				timeout:      "0.25s"
 				cluster_name: "ratelimit"
 			}
 		}
@@ -582,22 +581,24 @@ import (
 
 #OPAEgress: {
 	input: {
-		name: string
+		name:       string
 		domain_key: string
 		configs: [...]
 	}
 	_opa_key: "\(input.name)-egress-to-opa"
 	out: {
-		key: _opa_key
+		key:    _opa_key
 		config: [
 			#cluster & {
-				cluster_key: _opa_key,
-				name: "opa",
+				cluster_key: _opa_key
+				name:        "opa"
 				http2_protocol_options: {
 					allow_connect: true
 				}
 			},
-			#route & {route_key: _opa_key, domain_key: input.domain_key}
+			#route & {route_key: _opa_key, domain_key: input.domain_key},
 		] + input.configs
 	}
 }
+
+#catalogentry: greymatter.#CatalogService
