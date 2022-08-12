@@ -64,23 +64,31 @@ defaults: {
 		key:        "edge"
 		enable_tls: true
 		oidc: {
-			endpoint_host: "iam2.greymatter.io"
-			endpoint_port:  1234
-			endpoint:       "https://\(endpoint_host)"
-			domain:         "20.221.110.13"
-			client_id:      "example1"
-			client_secret:  "dtTDcMoW0mc88i3VJQnYVzOsWPU9hJr9"
-			realm:          "example-realm"
+			endpoint_host: ""
+			endpoint_port: 0
+			endpoint:      "https://\(endpoint_host):\(endpoint_port)"
+			domain:        ""
+			client_id:     "\(defaults.edge.key)"
+			client_secret: ""
+			realm:         ""
 			jwt_authn_provider: {
 				keycloak: {
-					issuer:     "\(endpoint)/realms/\(realm)"
-					audiences: ["\(client_id)"]
-					remote_jwks: {
-						http_uri: {
-							uri:     "\(endpoint)/realms/\(realm)/protocol/openid-connect/certs"
-							cluster: "edge_to_keycloak"
-						}
+					issuer: "\(endpoint)/auth/realms/\(realm)"
+					audiences: ["\(defaults.edge.key)"]
+					local_jwks: {
+						inline_string: #"""
+					  {}
+					  """#
 					}
+					// If you want to use a remote JWKS provider, comment out local_jwks above, and
+					// uncomment the below remote_jwks configuration. There are coinciding configurations
+					// in ./gm/outputs/edge.cue that you will also need to uncomment.
+					// remote_jwks: {
+					//  http_uri: {
+					//   uri:     "\(endpoint)/auth/realms/\(realm)/protocol/openid-connect/certs"
+					//   cluster: "edge_to_keycloak" // this key should be unique across the mesh
+					//  }
+					// }
 				}
 			}
 		}
